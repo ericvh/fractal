@@ -40,7 +40,11 @@ $(ARTIFACTS):
 	mkdir -p $(ARTIFACTS)
 
 $(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/go.work ${HOME}/.ssh/identity $(BUILDS_DIR)/u-root/u-root $(ARTIFACTS)
-	cd $(SRC_DIR) && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio -files ${HOME}/.ssh/identity.pub:key.pub -files /mnt $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/{gosh,mount,init,mkdir}
+	cd $(SRC_DIR) && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio \
+	 -files ${HOME}/.ssh/identity.pub:key.pub \
+	 -uinitcmd=/bbin/cpud \
+	 -files /mnt \
+	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/{gosh,mount,init,mkdir}
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
