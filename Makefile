@@ -33,7 +33,7 @@ $(ARTIFACTS)/Image.guest: $(ARTIFACTS)
 	wget -O $(ARTIFACTS)/Image.guest https://github.com/ericvh/cca-cpu/releases/latest/download/Image.guest > /dev/null 2>&1
 
 $(SRC_DIR)/go.work: $(SRC_DIR)/cpu/.git $(SRC_DIR)/u-root/.git
-	rm $(SRC_DIR)/go.work
+	rm -f $(SRC_DIR)/go.work
 	cd $(SRC_DIR) && go work init $(SRC_DIR)/u-root && go work use $(SRC_DIR)/cpu
 
 $(ARTIFACTS):
@@ -42,9 +42,9 @@ $(ARTIFACTS):
 $(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/go.work ${HOME}/.ssh/identity $(BUILDS_DIR)/u-root/u-root $(ARTIFACTS)
 	cd $(SRC_DIR) && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio \
 	 -files ${HOME}/.ssh/identity.pub:key.pub \
-	 -uinitcmd=/bbin/cpud \
+	 -uinitcmd='/bbin/cpud -d'\
 	 -files /mnt \
-	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/{gosh,mount,init,mkdir}
+	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/*
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
