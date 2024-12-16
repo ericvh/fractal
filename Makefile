@@ -44,7 +44,7 @@ $(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/go.work ${HOME}/.ssh/identity $(BUILDS_D
 	 -files ${HOME}/.ssh/identity.pub:key.pub \
 	 -uinitcmd='/bbin/cpud -d'\
 	 -files /mnt \
-	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/*
+	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/{init,gosh,ls,mount}
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu
