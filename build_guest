@@ -1,0 +1,9 @@
+#!/bin/bash -fvx 
+
+wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.5.tar.xz
+mkdir -p linux
+cd linux && xzcat ../linux-6.12.5.tar.xz | tar xf -
+cd linux-6.12.5
+cp ../../cpu.config .config
+make -j $(nproc) Image
+
