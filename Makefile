@@ -2,7 +2,7 @@
 default: build
 
 ROOTDIR ?= $(abspath ..)
-ARTIFACTS ?= $(ROOTDIR)/artifacts
+ARTIFACTS ?= /home/user/images/
 SRC_DIR ?= $(ROOTDIR)
 BUILDS_DIR ?= $(ROOTDIR)/build
 
@@ -39,12 +39,15 @@ $(SRC_DIR)/go.work: $(SRC_DIR)/cpu/.git $(SRC_DIR)/u-root/.git
 $(ARTIFACTS):
 	mkdir -p $(ARTIFACTS)
 
-$(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/go.work ${HOME}/.ssh/identity $(BUILDS_DIR)/u-root/u-root $(ARTIFACTS)
+$(ARTIFACTS)/initramfs.cpio: $(SRC_DIR)/go.work ${HOME}/.ssh/identity $(BUILDS_DIR)/u-root/u-root $(ARTIFACTS) $(SRC_DIR)/fractal/Makefile $(SRC_DIR)/fractal/fractal.gosh
 	cd $(SRC_DIR) && $(BUILDS_DIR)/u-root/u-root -o $(ARTIFACTS)/initramfs.cpio \
 	 -files ${HOME}/.ssh/identity.pub:key.pub \
-	 -uinitcmd='/bbin/cpud -d'\
+	 -uinitcmd='/bbin/gosh /bbin/fractal.gosh'\
 	 -files /mnt \
-	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu $(SRC_DIR)/u-root/cmds/core/{init,gosh,ls,mount}
+	 -files $(SRC_DIR)/fractal/fractal.gosh:bbin/fractal.gosh \
+	 $(SRC_DIR)/cpu/cmds/cpud $(SRC_DIR)/cpu/cmds/cpu \
+	 $(SRC_DIR)/u-root/cmds/core/{init,gosh,ls,mount} \
+	 $(SRC_DIR)/containerd/cmd/ctr $(SRC_DIR)/containerd/cmd/containerd
 
 .PHONY: build
 build: $(ARTIFACTS)/initramfs.cpio $(ARTIFACTS)/cpu

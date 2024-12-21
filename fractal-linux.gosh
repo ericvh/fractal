@@ -1,0 +1,11 @@
+NS="/workspaces /home /lib /usr /bin /etc"
+
+mount -t 9p -o trans=virtio,protocol=9p2000.L,noxattr FM /mnt
+
+for x in $NS; do
+   mkdir -p $x
+   mount -t none -o bind /mnt$x $x
+done
+
+echo hello squidboy
+gosh
